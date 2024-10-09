@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Adivinhe o número</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-primary text-white">
+    <div class="text-center p-5">
+      <h1>Advinhe o número</h1>
+      <input type="number" id="caixa" class="form-control mb-3" min="0" max="100">
+      <button class="btn btn-light">Adivinha</button>
+    </div>
+
+    <div id="alert" class="alert alert-primary alert-dismissible fade show w-100 mt-3">
+      <h1>Aviso</h1>
+      <p id="msg">Você acertou</p>
+      <button class="btn btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div id="modo" class="alert alert-success fade show w-100 mt-3 ">
+      <h1>Selecione o Modo</h1>
+      <p>1 - Fácil</p>
+      <p>2 - Normal</p>
+      <p>3 - Difícil</p>
+      <p>4 - Pesadelo</p>
+      <input id="inputModo" type="number">
+      <button id="btnEscolher">Escolher</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+  <script>
+    const msg = document.getElementById("msg");
+    const btn = document.querySelector("button");
+    const alerta = document.getElementById("alert");
+    let tentativas = 0;
+    let numeroAtual;
+    let valor = 0;
+    alerta.classList.add("invisible");
+
+    const removerAlert = () => {
+      alerta.classList.add("invisible");
+    }
+
+    document.getElementById("btnEscolher").addEventListener("click", () => {
+      const inputModo = Number(document.getElementById("inputModo").value);
+
+      switch (inputModo) {
+        case 1:
+          valor = 10;
+          break;
+        case 2:
+          valor = 100;
+          break;
+        case 3:
+          valor = 500;
+          break;
+        case 4:
+          valor = 1000;
+          break;
+        default:
+          msg.innerHTML = "Modo inválido. Escolha um número de 1 a 4.";
+          return;
+      }
+
+      numeroAtual = Math.round(Math.random() * valor);
+      alert("Modo selecionado: " + inputModo + ". Número gerado!");
+      tentativas = 0;
+      console.log("numero sorteado: " + numeroAtual);
+    });
+
+    const verificarNumero = () => {
+      const caixa = Number(document.getElementById("caixa").value);
+
+      if (caixa < 0 || caixa > valor) {
+        alerta.classList.remove("invisible");
+        alerta.classList.add("alert-danger");
+        msg.innerHTML = `Digite um número de 0 a ${valor}`;
+        setTimeout(removerAlert, 10000);
+      } else if (caixa === numeroAtual) {
+        alerta.classList.remove("invisible");
+        alerta.classList.remove("alert-danger");
+        alerta.classList.remove("alert-success");
+        alerta.classList.add("alert-primary");
+        msg.innerHTML = `Você acertou! O número é ${numeroAtual}. Você tentou ${tentativas} vezes.`;
+        setTimeout(removerAlert, 10000);
+      } else if (caixa > numeroAtual) {
+        alerta.classList.remove("invisible");
+        alerta.classList.remove("alert-danger");
+        alerta.classList.add("alert-warning");
+        msg.innerHTML = "Número muito alto! Tente novamente.";
+      } else if (caixa < numeroAtual) {
+        alerta.classList.remove("invisible");
+        alerta.classList.remove("alert-warning");
+        alerta.classList.add("alert-danger");
+        msg.innerHTML = "Número baixo demais! Tente novamente.";
+      }
+    }
+
+    btn.addEventListener("click", () => {
+      tentativas++;
+      verificarNumero();
+    });
+  </script>
+</body>
+
+</html>
